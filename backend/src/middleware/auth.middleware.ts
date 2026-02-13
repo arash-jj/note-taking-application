@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
 import { BETTER_AUTH_SECRET } from "../config/env.js";
-import { getCookieCache } from "better-auth/cookies";
 import { verifyJWT } from "better-auth/crypto";
 
 declare global {
@@ -10,15 +9,6 @@ declare global {
             session?: any;
         }
     }
-}
-
-async function extractAuthFromCookie(req: Request) {
-    try {
-        const payload = await getCookieCache(req.headers, { secret: BETTER_AUTH_SECRET });
-        if (payload && payload.user) return { user: payload.user, session: payload.session };
-    } catch (err) {
-    }
-    return null;
 }
 
 async function extractAuthFromAuthorizationHeader(req: Request) {
@@ -35,8 +25,6 @@ async function extractAuthFromAuthorizationHeader(req: Request) {
 }
 
 async function extractAuth(req: Request) {
-    const fromCookie = await extractAuthFromCookie(req);
-    if (fromCookie) return fromCookie;
     const fromHeader = await extractAuthFromAuthorizationHeader(req);
     if (fromHeader) return fromHeader;
     return null;
