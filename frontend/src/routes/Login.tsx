@@ -13,7 +13,6 @@ const LoginSchema = Yup.object().shape({
 export default function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
-
     const handleSubmit = async (
         values: { email: string; password: string },
         { setSubmitting, setFieldError }: any,
@@ -57,6 +56,10 @@ export default function Login() {
                     <button type="submit" disabled={isSubmitting} className="w-full rounded-md bg-sky-600 text-white px-4 py-2 hover:opacity-95 disabled:opacity-60">
                         {isSubmitting ? "Signing in…" : "Sign in"}
                     </button>
+                    <p>
+                        You don't have an account ?
+                        <a href="/register" className="ml-1 text-sky-600 hover:underline">Sign up</a>
+                    </p>
                 </Form>
                 )}
             </Formik>
