@@ -3,5 +3,6 @@ import { config } from "dotenv";
 config({ path: `.env` });
 
 export const {
-    PORT
+    PORT,
+    DATABASE_URI
 } = process.env;

@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
+    await import("./database/mongoDB.js").then(({ default: connectToDatabase }) => connectToDatabase());
 });
