@@ -24,8 +24,7 @@ export default function Register() {
             else setFieldError("email", "Registration failed");
         } else {
             resetForm();
-            alert("Registration successful — redirecting to dashboard...");
-            navigate("/dashboard", { replace: true });
+            navigate("/login", { replace: true });
         }
         } catch (err) {
             setFieldError("email", "Network error");
