@@ -55,6 +55,10 @@ export default function Register() {
                     <button type="submit" disabled={isSubmitting} className="w-full rounded-md bg-sky-600 text-white px-4 py-2 hover:opacity-95 disabled:opacity-60">
                         {isSubmitting ? "Creating…" : "Create account"}
                     </button>
+                    <p>
+                        Do you have already an account ? 
+                        <a href="/login" className="ml-1 text-sky-600 hover:underline">Sign in</a>
+                    </p>
                 </Form>
                 )}
             </Formik>
