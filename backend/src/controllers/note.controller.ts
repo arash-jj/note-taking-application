@@ -1,5 +1,8 @@
 import { Note } from "../models/note.model.js"
 import { Request, Response } from "express"
+import mongoose from "mongoose"
+
+const isValidId = (id: string) => mongoose.Types.ObjectId.isValid(id)
 
 export const getNotes = async (req: Request, res: Response) => {
     if (!req.user) {
@@ -33,6 +36,9 @@ export const createNote = async (req: Request, res: Response) => {
 }
 
 export const getNoteById = async (req: Request, res: Response) => {
+    if (!isValidId(req.params.id)) {
+        return res.status(400).json({ message: "Invalid note ID" })
+    }
     const note = await Note.findOne({
         _id: req.params.id,
         userId: req.user.id,
