@@ -81,7 +81,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
         }
         
         if (!auth.user || !auth.user.id) {
-            console.error("User missing ID:", auth.user);
+            console.error("User missing ID. Available keys:", auth.user ? Object.keys(auth.user) : "null");
             return res.status(401).json({ message: "Unauthorized" });
         }
         
