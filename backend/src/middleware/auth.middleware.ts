@@ -57,7 +57,7 @@ async function extractAuthFromAuthorizationHeader(req: Request) {
         }
         
         if (!userData.id) {
-            console.error("No ID found in user data:", userData);
+            console.error("No ID found in user data. Available keys:", Object.keys(userData));
             return null;
         }
         
