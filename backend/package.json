@@ -8,7 +8,7 @@
     "start": "node dist/app.js",
     "dev": "tsx src/app.ts",
     "start:dev": "nodemon --watch src --exec tsx src/app.ts",
-    "seed:notes": "ts-node src/seed/seedNotes.ts"
+    "seed:notes": "tsx src/seed/seedNotes.ts"
   },
   "keywords": [],
   "author": "arash-jj",

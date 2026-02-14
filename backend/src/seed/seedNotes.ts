@@ -1,5 +1,4 @@
-import mongoose from "mongoose"
-import connectTODatabase from "../database/mongoDB.js"
+import connectTODatabase from "../database/mongoDB";
 import { Note } from "../models/note.model.js"
 
 async function seedNotes() {
