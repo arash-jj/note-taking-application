@@ -2,6 +2,7 @@ import connectTODatabase from "../database/mongoDB";
 import { Note } from "../models/note.model.js"
 
 async function seedNotes() {
+  try {
     await connectTODatabase()
     console.log("🌱 Seeding notes...")
     // ⚠️ Replace with a real userId from your DB
@@ -32,10 +33,14 @@ async function seedNotes() {
             tags: ["tasks"],
         },
     ]
-    await Note.deleteMany()
+    await Note.deleteMany({ userId })
     await Note.insertMany(notes)
     console.log("✅ Notes seeded successfully!")
-    process.exit()
+    process.exit(0)
+  } catch (error) {
+    console.error("❌ Seeding failed:", error)
+    process.exit(1)
+  }
 }
 
 seedNotes()
