@@ -1,10 +1,9 @@
 import { Note } from "../models/note.model.js"
-import { Request, Response } from "express"
 import mongoose from "mongoose"
 
 const isValidId = (id: string) => mongoose.Types.ObjectId.isValid(id)
 
-export const getNotes = async (req: Request, res: Response) => {
+export const getNotes = async (req: any, res: any) => {
     if (!req.user) {
         return res.status(401).json({
             message: "Unauthorized: No user found in request",
@@ -17,7 +16,7 @@ export const getNotes = async (req: Request, res: Response) => {
     res.json(notes)
 }
 
-export const createNote = async (req: Request, res: Response) => {
+export const createNote = async (req: any, res: any) => {
     const { title, content, tags } = req.body
     if (!title || title.trim() === "") return res.status(400).json({ message: "Title is required" })
     const newNote = new Note({
@@ -35,7 +34,7 @@ export const createNote = async (req: Request, res: Response) => {
     }
 }
 
-export const getNoteById = async (req: Request, res: Response) => {
+export const getNoteById = async (req: any, res: any) => {
     if (!isValidId(req.params.id)) {
         return res.status(400).json({ message: "Invalid note ID" })
     }
@@ -49,7 +48,7 @@ export const getNoteById = async (req: Request, res: Response) => {
     res.json(note)
 }
 
-export const updateNote = async (req: Request, res: Response) => {
+export const updateNote = async (req: any, res: any) => {
     const { title, content, tags } = req.body
     const note = await Note.findOne({
         _id: req.params.id,
@@ -66,7 +65,7 @@ export const updateNote = async (req: Request, res: Response) => {
     res.json(note)
 }
 
-export const deleteNote = async (req: Request, res: Response) => {
+export const deleteNote = async (req: any, res: any) => {
     const note = await Note.findOneAndDelete({
         _id: req.params.id,
         userId: req.user.id,
@@ -77,7 +76,7 @@ export const deleteNote = async (req: Request, res: Response) => {
     res.json({ message: "Note deleted successfully" })
 }
 
-export const archiveNote = async (req: Request, res: Response) => {
+export const archiveNote = async (req: any, res: any) => {
     const note = await Note.findOne({
         _id: req.params.id,
         userId: req.user.id,
