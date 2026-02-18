@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Archive, ChevronRight, House } from "lucide-react"
 import { useLocation } from "react-router-dom";
+import TagsSidebar from "./TagsSidebar";
 
 export function AppSidebar() {
     const location = useLocation();
@@ -32,8 +33,7 @@ export function AppSidebar() {
                 </div>
             </SidebarHeader>
             <SidebarContent className="bg-white">
-                <SidebarGroup />
-                <SidebarGroup />
+                <TagsSidebar />
             </SidebarContent>
             <SidebarFooter />
         </Sidebar>

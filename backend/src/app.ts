@@ -6,6 +6,7 @@ import { DOMAIN, PORT } from "./config/env.js";
 import requireAuth from "./middleware/auth.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import noteRoutes from "./routes/note.routes.js"
+import tagsRoutes from "./routes/tags.routes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/notes", noteRoutes);
+app.use("/api/tags", tagsRoutes);
 
 app.get("/api/me", requireAuth, (req, res) => {
     return res.json({ user: req.user || null });
