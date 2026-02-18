@@ -4,6 +4,7 @@ import Register from "./routes/Register";
 import Dashboard from "./routes/Dashboard";
 import { ProtectedRoute, PublicRoute } from "./auth/RouteGuards";
 import { useAuth } from "./auth/AuthProvider";
+import Archive from './routes/Archive';
 
 function App() {
   const { user } = useAuth();
@@ -14,7 +15,9 @@ function App() {
           <Route index element={<PublicRoute><Register /></PublicRoute>} />
           <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} >
+            <Route path="archive" element={<ProtectedRoute><Archive /></ProtectedRoute>} />
+          </Route>
           <Route path="*" element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
         </Routes>
       </main>
