@@ -2,7 +2,6 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarGroup,
     SidebarHeader,
 } from "@/components/ui/sidebar"
 import { Archive, ChevronRight, House } from "lucide-react"

@@ -2,17 +2,24 @@ import { useAuth } from '../auth/AuthProvider';
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from '@/components/AppSidebar.tsx'
 import { Outlet } from "react-router";
+import DashboardHeader from '@/components/DashboardHeader';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   return (
     <SidebarProvider>
-      <main className='flex flex-row gap-2'>
+      <main className='flex flex-row w-full'>
         {/* Sidebar */}
         <AppSidebar />
-        <button onClick={logout}>Logout</button>
-        <br />
-        Dashboard
+        <div className="w-full">
+          {/* Header */}
+          <DashboardHeader />
+          <div className="">
+            <button onClick={logout}>Logout</button>
+            <br />
+            Dashboard
+          </div>
+        </div>
         <Outlet />
       </main>
     </SidebarProvider>
