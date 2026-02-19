@@ -6,28 +6,59 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Renders the sheet root element and attaches a `data-slot="sheet"` attribute for composition and testing.
+ *
+ * @param props - Props to forward to the underlying sheet root component.
+ * @returns The sheet root element with forwarded props and the `data-slot="sheet"` attribute.
+ */
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
+/**
+ * Renders an element that toggles the sheet when activated.
+ *
+ * @param props - Props forwarded to the underlying trigger element
+ * @returns The trigger element for the sheet
+ */
 function SheetTrigger({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 }
 
+/**
+ * Renders a sheet close control that invokes Radix UI's Close primitive.
+ *
+ * @param props - Props forwarded to the underlying Close primitive
+ * @returns A close trigger element that closes the sheet when activated
+ */
 function SheetClose({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Close>) {
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
 }
 
+/**
+ * Renders a Sheet portal element annotated with a data-slot for composition and testing.
+ *
+ * Forwards all props to the underlying Radix Sheet Portal.
+ *
+ * @returns A React element representing the sheet portal with `data-slot="sheet-portal"`.
+ */
 function SheetPortal({
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Portal>) {
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
+/**
+ * Renders the backdrop overlay used by the Sheet with built-in state-driven animations and base styling.
+ *
+ * @param className - Additional CSS classes to merge with the overlay's default classes
+ * @returns The Sheet overlay element configured with animation, positioning, and a translucent black background
+ */
 function SheetOverlay({
   className,
   ...props
@@ -44,6 +75,17 @@ function SheetOverlay({
   )
 }
 
+/**
+ * Renders sheet content with side-specific layout, animations, and an optional close button.
+ *
+ * The component composes a portal, overlay, and the sheet content region; it applies
+ * directional slide animations and layout classes based on `side` and forwards all
+ * other props to the underlying content element.
+ *
+ * @param side - Placement of the sheet: "top", "right", "bottom", or "left". Determines size, border placement, and slide-in/out animations.
+ * @param showCloseButton - If `true`, renders a positioned close button inside the sheet; set to `false` to hide it.
+ * @returns The rendered sheet content element (including portal and overlay).
+ */
 function SheetContent({
   className,
   children,
@@ -85,6 +127,11 @@ function SheetContent({
   )
 }
 
+/**
+ * Container for a sheet's header that applies spacing and padding.
+ *
+ * @returns A `div` element serving as the sheet header with vertical gap and padding; accepts and merges an optional `className` and any other div props.
+ */
 function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -95,6 +142,11 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * Renders the sheet footer container used to group footer actions and controls.
+ *
+ * @returns A div element serving as the sheet footer with base padding, vertical gap, and a column flex layout; accepts additional class names via `className`
+ */
 function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -105,6 +157,13 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * Renders a styled title for the Sheet component.
+ *
+ * Applies sheet-specific typography classes, sets a `data-slot="sheet-title"` attribute, and forwards any additional props to the underlying Radix Sheet Title primitive.
+ *
+ * @returns The rendered Sheet primitive Title element.
+ */
 function SheetTitle({
   className,
   ...props
@@ -118,6 +177,11 @@ function SheetTitle({
   )
 }
 
+/**
+ * Renders the sheet's descriptive text area with base muted typography.
+ *
+ * @returns The Sheet description element with base styling; additional props and `className` are forwarded to the underlying component.
+ */
 function SheetDescription({
   className,
   ...props

@@ -6,6 +6,13 @@ import { ProtectedRoute, PublicRoute } from "./auth/RouteGuards";
 import { useAuth } from "./auth/AuthProvider";
 import Archive from './routes/Archive';
 
+/**
+ * Application root component that renders the app's routed pages and layout.
+ *
+ * Renders public routes for `Register` and `Login`, protected routes for `Dashboard` and `Dashboard/Archive`, and a fallback redirect to `/dashboard` when a user exists or to `/login` otherwise.
+ *
+ * @returns The root JSX element containing the route tree and layout.
+ */
 function App() {
   const { user } = useAuth();
   return (

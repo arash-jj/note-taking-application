@@ -9,6 +9,11 @@ import { Archive, ChevronRight, House } from "lucide-react"
 import { useLocation } from "react-router-dom";
 import TagsSidebar from "./TagsSidebar";
 
+/**
+ * Render the application sidebar containing the logo, two primary navigation items (All Notes and Archive) with route-aware highlighting, a tags content area, and a footer.
+ *
+ * @returns A JSX element representing the app sidebar with navigation items that reflect the current route, a TagsSidebar content area, and a footer.
+ */
 export function AppSidebar() {
     const location = useLocation();
     return (

@@ -1,6 +1,13 @@
 import { Tag } from "lucide-react";
 import { useEffect, useState } from "react";
 
+/**
+ * Renders a sidebar that displays tags fetched from the API and handles loading and empty states.
+ *
+ * On mount, reads an auth token from localStorage and, if present, requests tags from /api/tags.
+ *
+ * @returns The sidebar JSX element showing a loading indicator, an empty-message, or a list of tag buttons.
+ */
 function TagsSidebar() {
 const [tags, setTags] = useState<any[]>([]);
 const [loading, setLoading] = useState(true);
