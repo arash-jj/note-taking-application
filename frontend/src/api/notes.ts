@@ -26,8 +26,14 @@ export const createNote = async (noteData: CreateNotePayload): Promise<NoteRespo
         body: JSON.stringify(noteData),
     });
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create note');
+        let message = 'Failed to create note';
+        try {
+            const error = await response.json();
+            message = error.message || message;
+        } catch {
+            // Non-JSON error body (e.g. HTML from proxy); fall back to default message
+        }
+        throw new Error(message);
     }
     return response.json();
 };

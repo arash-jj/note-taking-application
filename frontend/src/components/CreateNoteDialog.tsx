@@ -67,11 +67,12 @@ const CreateNoteDialog = () => {
                                 <Field name="tags" type="text" placeholder="Note tags" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
                                 <div className="text-sm text-red-600 mt-1"><ErrorMessage name="tags" /></div>
                             </label>
-                            <label htmlFor="content" className="block text-sm font-medium text-gray-700"></label>
+                            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
                                 <div className="mb-1 text-sm font-medium">Content</div>
-                                <Field name="content" as="textarea" placeholder="Note content" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
+                                <Field id="content" name="content" as="textarea" placeholder="Note content" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
                                 <div className="text-sm text-red-600 mt-1"><ErrorMessage name="content" /></div>
-                            {error && <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded">{error}</div>}
+                                {error && <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded">{error}</div>}
+                            </label>
                             <button type="submit" disabled={isLoading} className="w-full rounded-md bg-sky-600 text-white px-4 py-2 hover:opacity-95 disabled:opacity-60">
                                 {isLoading ? 'Creating...' : 'Create Note'}
                             </button>
