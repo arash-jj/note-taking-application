@@ -23,7 +23,6 @@ export const createNote = async (noteData: CreateNotePayload): Promise<NoteRespo
             'Content-Type': 'application/json',
             ...(token && { 'Authorization': `Bearer ${token}` }),
         },
-        credentials: 'include',
         body: JSON.stringify(noteData),
     });
     if (!response.ok) {
