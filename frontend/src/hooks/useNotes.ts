@@ -90,6 +90,7 @@ export const useNotes = () => {
             type: 'doc',
             content: [{ type: 'paragraph' }]
             },
+            tags: [],
             ...noteData
         };
         
