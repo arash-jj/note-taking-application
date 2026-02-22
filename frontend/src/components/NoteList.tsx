@@ -36,15 +36,15 @@ const NoteList: React.FC<NoteListProps> = ({
         <div className="flex-1 h-screen space-y-2">
             {notes.map(note => (
                 <div
-                key={note._id}
-                className={`
-                    border-b rounded-lg p-3 cursor-pointer transition-all flex flex-col justify-between
-                    ${selectedNote?._id === note._id 
-                        ? 'bg-[#F4F5F9] border-gray-300'
-                        : ' hover:bg-gray-100'
-                    }
-                `}
-                onClick={() => onSelectNote(note)}
+                    key={note._id}
+                    className={`
+                        border-b rounded-lg p-3 cursor-pointer transition-all flex flex-col justify-between
+                        ${selectedNote?._id === note._id 
+                            ? 'bg-[#F4F5F9] border-gray-300'
+                            : ' hover:bg-gray-100'
+                        }
+                    `}
+                    onClick={() => onSelectNote(note)}
                 >
                     <div className="flex justify-between items-start mb-2">
                         <h3 className="font-semibold text-gray-800 truncate flex-1">
@@ -53,14 +53,13 @@ const NoteList: React.FC<NoteListProps> = ({
                     </div>
                     <div className="flex flex-row gap-1 items-center">
                         {Array.isArray(note.tags) && note.tags.map((tag: string, index: number) => (
-                        <span
-                            key={`${tag}-${index}`}
-                            className="inline-block bg-gray-200 text-gray-700 text-xs p-1 rounded mr-1 font-semibold"
-                        >
-                            {tag.charAt(0).toUpperCase() + tag.slice(1)}
-                        </span>
+                            <span
+                                key={`${tag}-${index}`}
+                                className="inline-block bg-gray-200 text-gray-700 text-xs p-1 rounded mr-1 font-semibold"
+                            >
+                                {tag.charAt(0).toUpperCase() + tag.slice(1)}
+                            </span>
                         ))}
-                    </div>
                     </div>
                     <div className="text-xs text-gray-400">
                         {formatDate(note.updatedAt)}

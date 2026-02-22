@@ -30,7 +30,7 @@ export default function Dashboard() {
           <div className="flex flex-row w-full">
             {/* create note col */}
             <section className="w-1/4 h-screen py-3 px-2 flex flex-col items-center gap-4 border-r border-gray-300 overflow-y-scroll hide-scrollbar">
-              <CreateNoteDialog />
+              <CreateNoteDialog createNote={createNote} />
               <NoteList 
               notes={notes}
               selectedNote={selectedNote}

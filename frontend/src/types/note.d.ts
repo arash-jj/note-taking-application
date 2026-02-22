@@ -2,7 +2,7 @@ export interface Note {
     _id: string;
     title: string;
     content: any; // TipTap JSON content
-    tags: any; // Assuming tag is an array of strings or a string, adjust as needed
+    tags:string[] | string;
     userId?: string;
     createdAt: string;
     updatedAt: string;
@@ -23,6 +23,7 @@ export interface NoteResponse {
     _id: string;
     title: string;
     content: any;
+    tags:string[] | string;
     userId?: string;
     createdAt: string;
     updatedAt: string;

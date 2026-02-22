@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { ErrorMessage, Field, Formik } from "formik"
 import { Plus } from "lucide-react"
 import { useState } from "react"
-import { useNotes } from "@/hooks/useNotes"
+import type { Note, CreateNotePayload } from "@/types/note"
 
 const CreateNoteSchema = Yup.object().shape({
     title: Yup.string().required("Please provide a title for your note"),
@@ -17,9 +17,11 @@ const CreateNoteSchema = Yup.object().shape({
     content: Yup.string().optional(),
 })
 
+interface CreateNoteDialogProps {
+    createNote: (noteData?: Partial<CreateNotePayload>) => Promise<Note>;
+}
 
-const CreateNoteDialog = () => {
-    const { createNote } = useNotes()
+const CreateNoteDialog = ({ createNote }: CreateNoteDialogProps) => {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -31,7 +33,7 @@ const CreateNoteDialog = () => {
             await createNote({
                 title: values.title,
                 content: values.content || undefined,
-                tags: values.tags?.trim() || undefined,
+                tags: values.tags?.split(',').map(tag => tag.trim()).filter(tag => tag) || undefined,
             })
             setOpen(false)
         } catch (error) {
@@ -62,10 +64,9 @@ const CreateNoteDialog = () => {
                                 <Field name="title" type="text" placeholder="Note title" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
                                 <div className="text-sm text-red-600 mt-1"><ErrorMessage name="title" /></div>
                             </label>
-                            {/* Todo : Turn it into a select input */}
                             <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
                                 <div className="mb-1 text-sm font-medium">Tags</div>
-                                <Field name="tags" type="text" placeholder="Note tags" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
+                                <Field name="tags" type="text" placeholder="Note tags (comma-separated)" className="w-full rounded-md border px-3 py-2 bg-gray-50 dark:bg-slate-700 border-gray-200 dark:border-slate-700" />
                                 <div className="text-sm text-red-600 mt-1"><ErrorMessage name="tags" /></div>
                             </label>
                             <label htmlFor="content" className="block text-sm font-medium text-gray-700">
