@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { ErrorMessage, Field, Formik } from "formik"
 import { Plus } from "lucide-react"
 import { useState } from "react"
-import { createNote } from "@/api/notes"
+import { useNotes } from "@/hooks/useNotes"
 
 const CreateNoteSchema = Yup.object().shape({
     title: Yup.string().required("Please provide a title for your note"),
@@ -19,6 +19,7 @@ const CreateNoteSchema = Yup.object().shape({
 
 
 const CreateNoteDialog = () => {
+    const { createNote } = useNotes()
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -30,7 +31,7 @@ const CreateNoteDialog = () => {
             await createNote({
                 title: values.title,
                 content: values.content || undefined,
-                tags: values.tags || undefined,
+                tags: values.tags?.trim() || undefined,
             })
             setOpen(false)
         } catch (error) {
@@ -43,7 +44,7 @@ const CreateNoteDialog = () => {
     }
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger className="w-3/4 h-10 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors cursor-pointer flex items-center justify-center gap-1">
+            <DialogTrigger className="w-3/4 h-10 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors cursor-pointer flex items-center justify-center gap-1">
                 <Plus size={20}/>
                 <p>
                     Create New Note
