@@ -52,14 +52,15 @@ const NoteList: React.FC<NoteListProps> = ({
                         </h3>
                     </div>
                     <div className="flex flex-row gap-1 items-center">
-                        {note.tags.map((tag: string) => (
+                        {Array.isArray(note.tags) && note.tags.map((tag: string, index: number) => (
                         <span
-                            key={tag}
+                            key={`${tag}-${index}`}
                             className="inline-block bg-gray-200 text-gray-700 text-xs p-1 rounded mr-1 font-semibold"
                         >
                             {tag.charAt(0).toUpperCase() + tag.slice(1)}
                         </span>
                         ))}
+                    </div>
                     </div>
                     <div className="text-xs text-gray-400">
                         {formatDate(note.updatedAt)}
