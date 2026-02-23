@@ -3,7 +3,6 @@ import type { Note, CreateNotePayload, UpdateNotePayload, NoteResponse } from '.
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5500/api';
 
-// Helper function to get auth headers
 const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return {
@@ -12,7 +11,6 @@ const getAuthHeaders = () => {
     };
 };
 
-// Helper function to handle API responses
 const handleResponse = async <T>(response: Response): Promise<T> => {
     if (!response.ok) {
         let message = 'Request failed';
@@ -20,7 +18,6 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
         const error = await response.json();
         message = error.message || message;
         } catch {
-        // Non-JSON error body
         }
         throw new Error(message);
     }
@@ -33,7 +30,6 @@ export const useNotes = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch all notes
     const fetchNotes = useCallback(async () => {
         setLoading(true);
         setError(null);
@@ -44,7 +40,24 @@ export const useNotes = () => {
             });
             
             const data = await handleResponse<Note[]>(response);
-            setNotes(data);
+            
+            const parsedData = data.map(note => {
+                try {
+                    return {
+                        ...note,
+                        content: typeof note.content === 'string' && note.content 
+                            ? JSON.parse(note.content) 
+                            : note.content
+                    };
+                } catch {
+                    return {
+                        ...note,
+                        content: note.content || { type: 'doc', content: [{ type: 'paragraph' }] }
+                    };
+                }
+            });
+            
+            setNotes(parsedData);
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Error fetching notes');
             console.error('Error fetching notes:', error);
@@ -52,20 +65,34 @@ export const useNotes = () => {
             setLoading(false);
         }
     }, []);
-    // Fetch a single note by ID
+    
     const fetchNoteById = useCallback(async (id: string): Promise<Note> => {
         const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
-        method: 'GET',
-        headers: getAuthHeaders(),
+            method: 'GET',
+            headers: getAuthHeaders(),
         });
         
-        return handleResponse<Note>(response);
+        const note = await handleResponse<Note>(response);
+        
+        try {
+            return {
+                ...note,
+                content: typeof note.content === 'string' && note.content 
+                    ? JSON.parse(note.content) 
+                    : note.content
+            };
+        } catch {
+            return {
+                ...note,
+                content: note.content || { type: 'doc', content: [{ type: 'paragraph' }] }
+            };
+        }
     }, []);
-    // Select a note (can be used with the fetched note)
+    
     const selectNote = useCallback((note: Note | null) => {
         setSelectedNote(note);
     }, []);
-    // Select a note by ID (fetches the note first)
+    
     const selectNoteById = useCallback(async (id: string) => {
         setLoading(true);
         setError(null);
@@ -80,59 +107,88 @@ export const useNotes = () => {
         }
     }, [fetchNoteById]);
 
-    // Create a new note
     const createNote = useCallback(async (noteData?: Partial<CreateNotePayload>) => {
         setError(null);
         try {
-        const defaultNote: CreateNotePayload = {
-            title: 'Untitled Note',
-            content: {
-            type: 'doc',
-            content: [{ type: 'paragraph' }]
-            },
-            tags: [],
-            ...noteData
-        };
+            let content = noteData?.content;
+            if (content && typeof content === 'object') {
+                content = JSON.stringify(content);
+            }
+
+            const defaultContent = JSON.stringify({
+                type: 'doc',
+                content: [{ type: 'paragraph' }]
+            });
+
+            const defaultNote: CreateNotePayload = {
+                title: 'Untitled Note',
+                content: content || defaultContent,
+                tags: [],
+                ...noteData,
+            };
         
-        const response = await fetch(`${API_BASE_URL}/notes`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify(defaultNote),
-        });
+            const response = await fetch(`${API_BASE_URL}/notes`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(defaultNote),
+            });
         
-        const newNote = await handleResponse<NoteResponse>(response);
+            const newNote = await handleResponse<NoteResponse>(response);
         
-        // Convert NoteResponse to Note (add any missing fields)
-        const note: Note = {
-            ...newNote,
-            // Ensure all required fields are present
-            createdAt: newNote.createdAt || new Date().toISOString(),
-            updatedAt: newNote.updatedAt || new Date().toISOString(),
-        };
+            let parsedContent;
+            try {
+                parsedContent = typeof newNote.content === 'string' && newNote.content
+                    ? JSON.parse(newNote.content)
+                    : newNote.content;
+            } catch {
+                parsedContent = { type: 'doc', content: [{ type: 'paragraph' }] };
+            }
         
-        setNotes(prev => [note, ...prev]);
-        setSelectedNote(note);
+            const note: Note = {
+                ...newNote,
+                content: parsedContent,
+                createdAt: newNote.createdAt || new Date().toISOString(),
+                updatedAt: newNote.updatedAt || new Date().toISOString(),
+            };
         
-        return note;
+            setNotes(prev => [note, ...prev]);
+            setSelectedNote(note);
+        
+            return note;
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Error creating note');
             console.error('Error creating note:', error);
-        throw error;
+            throw error;
         }
     }, []);
-    // Update a note
+    
     const updateNote = useCallback(async (id: string, updates: Partial<UpdateNotePayload>) => {
         try {
+            const payload = { ...updates };
+            if (payload.content && typeof payload.content === 'object') {
+                payload.content = JSON.stringify(payload.content);
+            }
+        
             const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: getAuthHeaders(),
-                body: JSON.stringify(updates),
+                body: JSON.stringify(payload),
             });
             
             const updatedNote = await handleResponse<NoteResponse>(response);
             
+            let parsedContent;
+            try {
+                parsedContent = typeof updatedNote.content === 'string' && updatedNote.content
+                    ? JSON.parse(updatedNote.content)
+                    : updatedNote.content;
+            } catch {
+                parsedContent = { type: 'doc', content: [{ type: 'paragraph' }] };
+            }
+            
             const note: Note = {
                 ...updatedNote,
+                content: parsedContent,
                 createdAt: updatedNote.createdAt || new Date().toISOString(),
                 updatedAt: updatedNote.updatedAt || new Date().toISOString(),
             };
@@ -148,10 +204,10 @@ export const useNotes = () => {
             return note;
         } catch (error) {
             console.error('Error updating note:', error);
-        throw error;
+            throw error;
         }
     }, []);
-    // Delete a note
+    
     const deleteNote = useCallback(async (id: string) => {
         try {
             const response = await fetch(`${API_BASE_URL}/notes/${id}`, {
@@ -167,10 +223,11 @@ export const useNotes = () => {
             throw error;
         }
     }, []);
-    // Load notes on mount
+    
     useEffect(() => {
         fetchNotes();
     }, [fetchNotes]);
+    
     return {
         notes,
         selectedNote,

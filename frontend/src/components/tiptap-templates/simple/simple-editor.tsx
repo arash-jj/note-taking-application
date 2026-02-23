@@ -65,7 +65,7 @@ import { useWindowSize } from "@/hooks/use-window-size"
 import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 
 // --- Components ---
-import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
+// import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle"
 
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
@@ -148,7 +148,7 @@ const MainToolbarContent = ({
       {isMobile && <ToolbarSeparator />}
 
       <ToolbarGroup>
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </ToolbarGroup>
     </>
   )
@@ -183,14 +183,19 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({
+  note,
+  onEditorReady,
+}: {
+  note?: any
+  onEditorReady?: (editor: any) => void
+}) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   )
   const toolbarRef = useRef<HTMLDivElement>(null)
-
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
@@ -228,8 +233,24 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    content: note?.content ?? (content as any),
   })
+
+  // notify parent with editor instance and react to note changes
+  useEffect(() => {
+    if (onEditorReady) onEditorReady(editor)
+  }, [editor, onEditorReady])
+
+  useEffect(() => {
+    if (!editor) return
+    if (note && note.content) {
+      try {
+        editor.commands.setContent(note.content)
+      } catch (e) {
+        console.error('Failed to set editor content from note:', e)
+      }
+    }
+  }, [note, editor])
 
   const rect = useCursorVisibility({
     editor,
