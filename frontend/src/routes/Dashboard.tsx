@@ -15,7 +15,7 @@ const SimpleEditor = React.lazy(() =>
 );
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
     const {
     notes,
     selectedNote,
@@ -24,6 +24,21 @@ export default function Dashboard() {
     updateNote,
     deleteNote
   } = useNotes();
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  const filteredNotes = React.useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return notes;
+    return notes.filter(n => {
+      const title = n.title || '';
+      const content = n.content ? JSON.stringify(n.content) : '';
+      return (
+        title.toLowerCase().includes(q) ||
+        content.toLowerCase().includes(q)
+      );
+    });
+  }, [notes, searchQuery]);
+
   const editorRef = React.useRef<any>(null)
   const [saving, setSaving] = React.useState(false)
   const handleEditorReady = (ed: any) => {
@@ -54,13 +69,18 @@ export default function Dashboard() {
       <main className='flex flex-row w-full'>
         <AppSidebar />
         <div className="w-full">
-          <DashboardHeader />
+          <DashboardHeader
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onLogout={logout}
+          />
           <div className="flex flex-row w-full">
             <section className="w-1/4 h-screen py-3 px-2 flex flex-col items-center gap-4 overflow-y-scroll hide-scrollbar">
               <CreateNoteDialog createNote={createNote} />
               <NoteList 
-              notes={notes}
+              notes={filteredNotes}
               selectedNote={selectedNote}
+              searchQuery={searchQuery}
               onSelectNote={(note) => {selectNote(note);}}
               />
             </section>
@@ -99,7 +119,7 @@ export default function Dashboard() {
             {selectedNote && (
               <>
               <div className="p-4">
-                  <h1 className="text-xl font-semibold mb-2">{selectedNote.title}</h1>
+                  <h1 className="text-xl font-semibold mb-2">{selectedNote.title.charAt(0).toUpperCase() + selectedNote.title.slice(1)}</h1>
                   <div className="flex flex-row items-center gap-3">
                     <Tags size={16} className="inline-block mr-2" />
                     <span className="text-sm text-gray-600">{selectedNote.tags}</span>

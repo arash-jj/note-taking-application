@@ -5,12 +5,14 @@ interface NoteListProps {
     notes: Note[];
     selectedNote: Note | null;
     onSelectNote: (note: Note) => void;
+    searchQuery?: string;
 }
 
 const NoteList: React.FC<NoteListProps> = ({
     notes,
     selectedNote,
     onSelectNote,
+    searchQuery = '',
     }) => {
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -26,10 +28,15 @@ const NoteList: React.FC<NoteListProps> = ({
         return date.toLocaleDateString();
     };
     if (notes.length === 0) {
+        const noSearch = !searchQuery || searchQuery.trim() === '';
         return (
-        <div className="p-10 text-center text-gray-500 text-sm">
-            No notes yet. Create a new one !
-        </div>
+            <div className="p-10 text-center text-gray-500 text-sm">
+                {noSearch ? (
+                    <>No notes yet. Create a new one!</>
+                ) : (
+                    <>No notes match your search.</>
+                )}
+            </div>
         );
     }
     return (
