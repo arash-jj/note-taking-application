@@ -7,6 +7,7 @@ import DashboardHeader from '@/components/DashboardHeader';
 import CreateNoteDialog from '@/components/CreateNoteDialog';
 import NoteList from '@/components/NoteList';
 import { useNotes } from '@/hooks/useNotes';
+import { Clock, Tags, Trash } from 'lucide-react';
 const SimpleEditor = React.lazy(() =>
   import('@/components/tiptap-templates/simple/simple-editor').then((m) => ({
     default: m.SimpleEditor,
@@ -18,8 +19,6 @@ export default function Dashboard() {
     const {
     notes,
     selectedNote,
-    loading,
-    error,
     selectNote,
     createNote,
     updateNote,
@@ -53,13 +52,10 @@ export default function Dashboard() {
   return (
     <SidebarProvider>
       <main className='flex flex-row w-full'>
-        {/* Sidebar */}
         <AppSidebar />
         <div className="w-full">
-          {/* Header */}
           <DashboardHeader />
           <div className="flex flex-row w-full">
-            {/* create note col */}
             <section className="w-1/4 h-screen py-3 px-2 flex flex-col items-center gap-4 overflow-y-scroll hide-scrollbar">
               <CreateNoteDialog createNote={createNote} />
               <NoteList 
@@ -68,7 +64,6 @@ export default function Dashboard() {
               onSelectNote={(note) => {selectNote(note);}}
               />
             </section>
-            {/* note editor col */}
             <section className="w-1/2 h-screen overflow-y-auto hide-scrollbar relative border-x border-gray-300">
               {selectedNote ? (
                 <>
@@ -100,7 +95,29 @@ export default function Dashboard() {
                 </div>
               )}
             </section>
-            <section className='w-1/4 h-screen'></section>
+            <section className='w-1/4 h-screen'>
+            {selectedNote && (
+              <>
+              <div className="p-4">
+                  <h1 className="text-xl font-semibold mb-2">{selectedNote.title}</h1>
+                  <div className="flex flex-row items-center gap-3">
+                    <Tags size={16} className="inline-block mr-2" />
+                    <span className="text-sm text-gray-600">{selectedNote.tags}</span>
+                  </div>
+                  <div className="flex flex-row items-center gap-3 mt-2">
+                    <Clock size={16} className="inline-block mr-2" />
+                    <p className="text-sm text-gray-500 leading-1">Last Edited: {new Date(selectedNote.updatedAt).toLocaleDateString()}</p>
+                  </div>
+              </div>
+              <div className="flex flex-col gap-2 p-4 ">
+                <button onClick={() => deleteNote(selectedNote._id)} className="text-sm px-4 py-2 rounded border hover:bg-red-600 hover:text-white cursor-pointer">
+                  <Trash  size={16} className="inline-block mr-2" />
+                  <span>Delete Note</span>
+                </button>
+              </div>
+              </>
+            )}
+            </section>
           </div>
         </div>
         <Outlet />
